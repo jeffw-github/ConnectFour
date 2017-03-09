@@ -1,6 +1,7 @@
 import java.util.Random;
 import java.lang.Math;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 // minimax alogrithm
 // decision funciton
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 
 public class minimax extends AIModule
 {
-	private int maxLayer = 2;
+	private int maxLayer = 6;
 	private int p;
 
 	@Override
@@ -44,19 +45,19 @@ public class minimax extends AIModule
 
 		// define current player*
 		final int p = state.getActivePlayer();
+		// System.out.println("AI called");
 
 		while(!terminate)
 		{
 			// reset max value
 			max = Integer.MIN_VALUE;
-
 			// test for each possible move which one is the most optimal
 			for(int move: moves)
 			{
-				System.out.println("move: " + move);
+				// System.out.println("move: " + move);
 				if(terminate == true)
 				{
-					maxLayer--;
+					// maxLayer--;
 					return;
 				}
 
@@ -71,7 +72,7 @@ public class minimax extends AIModule
 
 					// generate max value:
 					int newMax = minValue(state, 1, move);
-					System.out.println("newMax: " + newMax + " max: " + max);
+					// System.out.println("newMax: " + newMax + " max: " + max);
 
 					// if move is more optimal than prev:
 					if (newMax > max)
@@ -79,15 +80,16 @@ public class minimax extends AIModule
 						// reset max & column to play
 						max = newMax;
 						choose = hold;
-						System.out.println("choose: " + choose);
+						// System.out.println("choose: " + choose);
 					}
 
 					// unmake move
 					state.unMakeMove();
 				}
 			}
-			System.out.println("-------------");
-			maxLayer++;
+			// System.out.println("-------------");
+			// maxLayer++; // work as intended without this and maxlayer--
+			//error if two ways to win
 			chosenMove = choose; //set our move
 		}
 	}
@@ -101,21 +103,14 @@ public class minimax extends AIModule
 			int winner = state.getWinner();
 			if(winner == 0)
 				return 0; //if game ended in draw, no reinforcement
-			else if(winner == state.getActivePlayer())
-			{
-				return Integer.MIN_VALUE; //if min wins negative reinforcement
-			}
 			else
-				return Integer.MAX_VALUE; //if max wins positive reinforcement
+				return Integer.MAX_VALUE;
 		}
 		// if max layer
 		if( curLayer == maxLayer )
 		{
 			// return evaluation(state);
-			if(mov >= 3)
-				return 40;
-			else
-				return 30;
+			return Integer.MIN_VALUE + 1;
 		}
 
 		// min
@@ -129,11 +124,9 @@ public class minimax extends AIModule
 			if(terminate == true)
 	      {
 					// return Math.min(min, evaluation(state));
-					if(mov >= 3)
-						return 20;
-					else
-						return 10;
+					// return 30;
 					// break;
+					return Integer.MIN_VALUE + 1;
 	      }//if we have run out of time
 
 			if( move > -1)
@@ -155,19 +148,14 @@ public class minimax extends AIModule
 			int winner = state.getWinner();
 			if(winner == 0)
 				return 0; //if game ended in draw, no reinforcement
-			else if(winner == state.getActivePlayer())
-				return Integer.MAX_VALUE;
 			else
-				return Integer.MIN_VALUE; //if max wins positive reinforcement
+				return Integer.MIN_VALUE + 1;
 		}
 		// if max layer
 		if( curLayer == maxLayer )
 		{
 			// return evaluation(state);
-			if(mov >= 3)
-				return 20;
-			else
-				return 10;
+				return Integer.MAX_VALUE;
 		}
 
 		// min
@@ -181,10 +169,7 @@ public class minimax extends AIModule
 			if(terminate == true)
         {
 					// return Math.max(max, evaluation(state));
-					if(mov >= 3)
-						return 20;
-					else
-						return 10;
+					return Integer.MIN_VALUE + 1;
 					// break;
         }//if we have run out of time
 
@@ -202,13 +187,28 @@ public class minimax extends AIModule
 	private int[] legalMoves(final GameStateModule state)
 	{
 		int moves[] = new int[state.getWidth()];
+		//initialize order to play moves
+		if(state.getWidth() == 7){
+			int order[] = {3, 2, 4, 1, 5, 0, 6};
+			moves = order;
+		}
+		else{
+			int order[] = {3, 4, 2, 5, 1, 6, 0, 7};
+			moves = order;
+		}
 
-		for (int i = 0; i < state.getWidth() ; i++)
+
+		for (int i = 0; i < state.getWidth(); i++)
 		{
-			if (state.canMakeMove(i))
-				moves[i] = i;
-			else
-				moves[i] = -1;
+			if (!state.canMakeMove(i)){ //if move is not valid set as -1
+				for(int j = 0; j < state.getWidth(); j++)
+				{
+					if(i == moves[j])
+					{
+						moves[j] = -1;
+					}
+				}
+			}
 		}
 
 		return moves;

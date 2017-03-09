@@ -28,7 +28,7 @@ import java.util.Scanner;
 public class minimax1 extends AIModule
 {
 	Scanner scanner = new Scanner(System.in);
-	private int maxLayer = Integer.parseInt(scanner.next());
+	private int maxLayer = 2;
 	private int p, width, height;
 
 	@Override
@@ -60,7 +60,7 @@ public class minimax1 extends AIModule
 			{
 				if(terminate == true)
           {
-						maxLayer--;
+						// maxLayer--;
           	return;
           }
 
@@ -85,11 +85,11 @@ public class minimax1 extends AIModule
 
 				// System.out.println("Choose move[" + choose + "] because score is " + max);
 			}
-			maxLayer++;
+			// maxLayer++;
 			chosenMove = choose; //set our move
-			System.out.println("Chose column " + chosenMove);
-			System.out.println("Move Score: " + max);
-			System.out.println("---------------------------");
+			// System.out.println("Chose column " + chosenMove);
+			// System.out.println("Move Score: " + max);
+			// System.out.println("---------------------------");
 		}
 
 	}
@@ -189,7 +189,9 @@ public class minimax1 extends AIModule
 		for (int i = 0; i < state.getWidth() ; i++)
 		{
 			if (state.canMakeMove(i))
+			{
 				moves[i] = i;
+			}
 			else
 				moves[i] = -1;
 		}

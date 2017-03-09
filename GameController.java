@@ -61,8 +61,10 @@ public final class GameController
 				// Update graphics
 				io.drawBoard(game);
 				// Break if done
-				if(game.isGameOver())
+				if(game.isGameOver()){
+					System.out.println(game.getCoins());
 					break;
+				}
 			}
 	}
 
